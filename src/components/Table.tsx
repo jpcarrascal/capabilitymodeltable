@@ -54,6 +54,31 @@ const Table: React.FC = () => {
     });
   };
 
+  const saveStateToFile = () => {
+    if (!tableData) return;
+    const json = JSON.stringify(tableData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tableData.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const loadStateFromFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const json = e.target?.result as string;
+      const data = JSON.parse(json) as TableData;
+      setTableData(data);
+    };
+    reader.readAsText(file);
+  };
+
   if (!tableData) {
     return <div>Loading...</div>;
   }
@@ -68,6 +93,8 @@ const Table: React.FC = () => {
 
   return (
     <div className="table-container" ref={tableContainerRef}>
+      <button onClick={saveStateToFile}>Save State</button>
+      <input type="file" accept="application/json" onChange={loadStateFromFile} />
       <table>
         <thead>
           <tr>
