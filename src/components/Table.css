@@ -65,6 +65,10 @@ td {
   pointer-events: none;
 }
 
+.lines-svg line[stroke-dasharray] {
+  opacity: 0.6;
+}
+
 .circle {
   position: absolute;
   width: 10px;

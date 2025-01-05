@@ -86,6 +86,18 @@ const Table: React.FC = () => {
     reader.readAsText(file);
   };
 
+  // Add helper function to get cell center coordinates
+  const getCellCenter = (cellElement: HTMLTableCellElement) => {
+    const rect = cellElement.getBoundingClientRect();
+    const containerRect = tableContainerRef.current?.getBoundingClientRect();
+    if (!containerRect) return null;
+
+    return {
+      x: rect.left + rect.width / 2 - containerRect.left,
+      y: rect.top + rect.height / 2 - containerRect.top
+    };
+  };
+
   if (!tableData) {
     return <div>Loading...</div>;
   }
@@ -220,6 +232,35 @@ const Table: React.FC = () => {
                   strokeWidth="2"
                 />
               );
+            }
+          }
+          return null;
+        })}
+
+        {/* Add new lines between current and aspirational states */}
+        {tableData.rows.map((row, rowIndex) => {
+          if (row.currentState && row.aspirationalState) {
+            const currentCell = cellRefs.current[rowIndex]?.[row.currentState.cellIndex];
+            const aspirationalCell = cellRefs.current[rowIndex]?.[row.aspirationalState.cellIndex];
+
+            if (currentCell && aspirationalCell && tableContainerRef.current) {
+              const currentPos = getCellCenter(currentCell);
+              const aspirationalPos = getCellCenter(aspirationalCell);
+
+              if (currentPos && aspirationalPos) {
+                return (
+                  <line
+                    key={`state-line-${rowIndex}`}
+                    x1={currentPos.x}
+                    y1={currentPos.y}
+                    x2={aspirationalPos.x}
+                    y2={aspirationalPos.y}
+                    stroke="#666"
+                    strokeWidth="1"
+                    strokeDasharray="4"
+                  />
+                );
+              }
             }
           }
           return null;
