@@ -102,7 +102,15 @@ const Table: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const headerColors = ['violet', 'magenta', 'teal', 'cyan', 'green'];
+  // const headerColors = ['violet', 'magenta', 'teal', 'cyan', 'green'];
+
+  const headerColors = [
+    '#6366f1', // Indigo
+    '#8b5cf6', // Purple
+    '#ec4899', // Pink
+    '#14b8a6', // Teal
+    '#22c55e'  // Green
+  ];
 
   const clickPositions: ClickPosition[] = tableData.rows
     .map((row, rowIndex) =>
@@ -162,6 +170,11 @@ const Table: React.FC = () => {
                         cellRefs.current[rowIndex][cellIndex] = el;
                       }
                     }}
+                    className={`
+                      ${(row.currentState?.cellIndex === cellIndex || 
+                         row.aspirationalState?.cellIndex === cellIndex) ? 
+                         'active-cell' : ''}
+                    `}
                     style={{
                       position: 'relative',
                       verticalAlign: 'top',
