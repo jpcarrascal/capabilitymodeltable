@@ -8,8 +8,11 @@ interface ClickPosition {
   cellIndex: number;
 }
 
+type SelectionMode = 'current' | 'aspirational';
+
 const Table: React.FC = () => {
   const [tableData, setTableData] = useState<TableData | null>(null);
+  const [selectionMode, setSelectionMode] = useState<SelectionMode>('current');
   const [, forceUpdate] = useState({});
 
   // Refs to table cells
@@ -49,7 +52,11 @@ const Table: React.FC = () => {
     setTableData((prevData) => {
       if (!prevData) return prevData;
       const newData = { ...prevData };
-      newData.rows[rowIndex].currentState = { x, y, cellIndex };
+      if (selectionMode === 'current') {
+        newData.rows[rowIndex].currentState = { x, y, cellIndex };
+      } else {
+        newData.rows[rowIndex].aspirationalState = { x, y, cellIndex };
+      }
       return newData;
     });
   };
@@ -93,6 +100,24 @@ const Table: React.FC = () => {
 
   return (
     <div className="table-container" ref={tableContainerRef}>
+      <div className="controls">
+        <label>
+          <input
+            type="radio"
+            value="current"
+            checked={selectionMode === 'current'}
+            onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
+          /> Current State
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="aspirational"
+            checked={selectionMode === 'aspirational'}
+            onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
+          /> Aspirational Goals
+        </label>
+      </div>
       <button onClick={saveStateToFile}>Save State</button>
       <input type="file" accept="application/json" onChange={loadStateFromFile} />
       <table>
@@ -135,18 +160,25 @@ const Table: React.FC = () => {
                     {cell}
                     {row.currentState && row.currentState.cellIndex === cellIndex && (
                       <div
-                        className="circle"
+                        className="circle current"
                         style={{
                           position: 'absolute',
                           left: '50%',
                           top: '50%',
                           transform: 'translate(-50%, -50%)',
-                          width: '10px',
-                          height: '10px',
-                          borderRadius: '50%',
-                          backgroundColor: 'black',
                         }}
-                      ></div>
+                      />
+                    )}
+                    {row.aspirationalState && row.aspirationalState.cellIndex === cellIndex && (
+                      <div
+                        className="circle aspirational"
+                        style={{
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      />
                     )}
                   </td>
                 ))}

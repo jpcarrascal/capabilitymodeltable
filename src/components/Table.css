@@ -78,3 +78,34 @@ td {
   height: 2px;
   background-color: black;
 }
+
+.controls {
+  margin: 20px 0;
+}
+
+.controls label {
+  margin-right: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.controls input[type="radio"] {
+  margin-right: 8px;
+}
+
+.circle.current {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: black;
+  position: absolute;
+}
+
+.circle.aspirational {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: blue;
+  border: 2px solid black;
+  position: absolute;
+}
