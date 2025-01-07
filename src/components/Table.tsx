@@ -16,6 +16,14 @@ const Table: React.FC = () => {
   const [tableData, setTableData] = useState<TableData | null>(null);
   const [selectionMode, setSelectionMode] = useState<SelectionMode>('current');
   const [, forceUpdate] = useState({});
+  const [stateHistory, setStateHistory] = useState<TableData[]>([]);
+  
+  // Add useEffect to capture initial state
+  // useEffect(() => {
+  //   if (tableData) {
+  //     setStateHistory([JSON.parse(JSON.stringify(tableData))]);
+  //   }
+  // }, []); // Run once on mount
 
   // Refs to table cells
   const cellRefs = useRef<HTMLTableCellElement[][]>([]);
@@ -37,17 +45,20 @@ const Table: React.FC = () => {
 
   const handleCellClick = (
     event: React.MouseEvent<HTMLTableCellElement>,
-    rowIndex: number,
+    rowIndex: number, 
     cellIndex: number
   ) => {
     const cell = event.currentTarget;
     const rect = cell.getBoundingClientRect();
-
-    // Get the table container's bounding rectangle
     const containerRect = tableContainerRef.current?.getBoundingClientRect();
-    if (!containerRect) return;
+    if (!containerRect || !tableData) return;
 
-    // Calculate x and y relative to the container
+    // Create snapshot before any updates
+    const snapshot = JSON.parse(JSON.stringify(tableData));
+        
+    // Save snapshot to history
+    setStateHistory(prev => [...prev, snapshot]);
+
     const x = rect.left + rect.width / 2 - containerRect.left;
     const y = rect.top + rect.height / 2 - containerRect.top;
 
@@ -130,6 +141,17 @@ const Table: React.FC = () => {
     }
   };
 
+  const handleUndo = () => {
+    if (stateHistory.length > 0) {
+      // Get the last state
+      const previousState = stateHistory[stateHistory.length - 1];
+      // Remove the last state from history
+      setStateHistory(prev => prev.slice(0, -1));
+      // Restore the previous state
+      setTableData(previousState);
+    }
+  };
+
   if (!tableData) {
     return <div>Loading...</div>;
   }
@@ -169,6 +191,12 @@ const Table: React.FC = () => {
             onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
           /> Aspirational Goals
         </label>
+        <button 
+          onClick={handleUndo} 
+          disabled={stateHistory.length === 0}
+        >
+          Undo
+        </button>
         <button onClick={exportToPDF}>Export to PDF</button>
       </div>
       <button onClick={saveStateToFile}>Save State</button>
