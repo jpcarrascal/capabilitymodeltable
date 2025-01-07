@@ -2,6 +2,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { TableData } from '../types/TableData';
 import './Table.css';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface ClickPosition {
   rowIndex: number;
@@ -98,6 +100,36 @@ const Table: React.FC = () => {
     };
   };
 
+  // Add this function inside the Table component
+  const exportToPDF = async () => {
+    if (!tableContainerRef.current) return;
+
+    try {
+      // Create canvas from table
+      const options: Parameters<typeof html2canvas>[1] = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        useCORS: true,
+        logging: false,
+        background: '#ffffff'
+      };
+
+      const canvas = await html2canvas(tableContainerRef.current, options);
+
+      // Calculate dimensions
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Create PDF
+      const pdf = new jsPDF('p', 'mm');
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('capability-model.pdf');
+    } catch (error) {
+      console.error('PDF export failed:', error);
+    }
+  };
+
   if (!tableData) {
     return <div>Loading...</div>;
   }
@@ -137,6 +169,7 @@ const Table: React.FC = () => {
             onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
           /> Aspirational Goals
         </label>
+        <button onClick={exportToPDF}>Export to PDF</button>
       </div>
       <button onClick={saveStateToFile}>Save State</button>
       <input type="file" accept="application/json" onChange={loadStateFromFile} />
