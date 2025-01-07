@@ -8,8 +8,11 @@ interface ClickPosition {
   cellIndex: number;
 }
 
+type SelectionMode = 'current' | 'aspirational';
+
 const Table: React.FC = () => {
   const [tableData, setTableData] = useState<TableData | null>(null);
+  const [selectionMode, setSelectionMode] = useState<SelectionMode>('current');
   const [, forceUpdate] = useState({});
 
   // Refs to table cells
@@ -49,7 +52,11 @@ const Table: React.FC = () => {
     setTableData((prevData) => {
       if (!prevData) return prevData;
       const newData = { ...prevData };
-      newData.rows[rowIndex].currentState = { x, y, cellIndex };
+      if (selectionMode === 'current') {
+        newData.rows[rowIndex].currentState = { x, y, cellIndex };
+      } else {
+        newData.rows[rowIndex].aspirationalState = { x, y, cellIndex };
+      }
       return newData;
     });
   };
@@ -79,11 +86,31 @@ const Table: React.FC = () => {
     reader.readAsText(file);
   };
 
+  // Add helper function to get cell center coordinates
+  const getCellCenter = (cellElement: HTMLTableCellElement) => {
+    const rect = cellElement.getBoundingClientRect();
+    const containerRect = tableContainerRef.current?.getBoundingClientRect();
+    if (!containerRect) return null;
+
+    return {
+      x: rect.left + rect.width / 2 - containerRect.left,
+      y: rect.top + rect.height / 2 - containerRect.top
+    };
+  };
+
   if (!tableData) {
     return <div>Loading...</div>;
   }
 
-  const headerColors = ['violet', 'magenta', 'teal', 'cyan', 'green'];
+  // const headerColors = ['violet', 'magenta', 'teal', 'cyan', 'green'];
+
+  const headerColors = [
+    '#6366f1', // Indigo
+    '#8b5cf6', // Purple
+    '#ec4899', // Pink
+    '#14b8a6', // Teal
+    '#22c55e'  // Green
+  ];
 
   const clickPositions: ClickPosition[] = tableData.rows
     .map((row, rowIndex) =>
@@ -93,6 +120,24 @@ const Table: React.FC = () => {
 
   return (
     <div className="table-container" ref={tableContainerRef}>
+      <div className="controls">
+        <label>
+          <input
+            type="radio"
+            value="current"
+            checked={selectionMode === 'current'}
+            onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
+          /> Current State
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="aspirational"
+            checked={selectionMode === 'aspirational'}
+            onChange={(e) => setSelectionMode(e.target.value as SelectionMode)}
+          /> Aspirational Goals
+        </label>
+      </div>
       <button onClick={saveStateToFile}>Save State</button>
       <input type="file" accept="application/json" onChange={loadStateFromFile} />
       <table>
@@ -125,6 +170,11 @@ const Table: React.FC = () => {
                         cellRefs.current[rowIndex][cellIndex] = el;
                       }
                     }}
+                    className={`
+                      ${(row.currentState?.cellIndex === cellIndex || 
+                         row.aspirationalState?.cellIndex === cellIndex) ? 
+                         'active-cell' : ''}
+                    `}
                     style={{
                       position: 'relative',
                       verticalAlign: 'top',
@@ -135,18 +185,25 @@ const Table: React.FC = () => {
                     {cell}
                     {row.currentState && row.currentState.cellIndex === cellIndex && (
                       <div
-                        className="circle"
+                        className="circle current"
                         style={{
                           position: 'absolute',
                           left: '50%',
                           top: '50%',
                           transform: 'translate(-50%, -50%)',
-                          width: '10px',
-                          height: '10px',
-                          borderRadius: '50%',
-                          backgroundColor: 'black',
                         }}
-                      ></div>
+                      />
+                    )}
+                    {row.aspirationalState && row.aspirationalState.cellIndex === cellIndex && (
+                      <div
+                        className="circle aspirational"
+                        style={{
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      />
                     )}
                   </td>
                 ))}
@@ -188,6 +245,35 @@ const Table: React.FC = () => {
                   strokeWidth="2"
                 />
               );
+            }
+          }
+          return null;
+        })}
+
+        {/* Add new lines between current and aspirational states */}
+        {tableData.rows.map((row, rowIndex) => {
+          if (row.currentState && row.aspirationalState) {
+            const currentCell = cellRefs.current[rowIndex]?.[row.currentState.cellIndex];
+            const aspirationalCell = cellRefs.current[rowIndex]?.[row.aspirationalState.cellIndex];
+
+            if (currentCell && aspirationalCell && tableContainerRef.current) {
+              const currentPos = getCellCenter(currentCell);
+              const aspirationalPos = getCellCenter(aspirationalCell);
+
+              if (currentPos && aspirationalPos) {
+                return (
+                  <line
+                    key={`state-line-${rowIndex}`}
+                    x1={currentPos.x}
+                    y1={currentPos.y}
+                    x2={aspirationalPos.x}
+                    y2={aspirationalPos.y}
+                    stroke="#666"
+                    strokeWidth="1"
+                    strokeDasharray="4"
+                  />
+                );
+              }
             }
           }
           return null;

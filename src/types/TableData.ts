@@ -9,5 +9,10 @@ export interface TableData {
       y: number;
       cellIndex: number;
     };
+    aspirationalState?: {
+      x: number;
+      y: number;
+      cellIndex: number;
+    };
   }[];
 }

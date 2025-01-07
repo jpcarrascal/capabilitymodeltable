@@ -1,59 +1,68 @@
 /* src/components/Table.css */
-td:first-child {
-    text-align: center; /* Center align text in the first column */
+/* Modern color palette and variables */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #64748b;
+  --success: #22c55e;
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-muted: #94a3b8;
 }
+
+td:first-child {
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--text);
+}
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Roboto', sans-serif; /* Use a modern font */
-    margin-top: 40px; /* Add margin to the top to make space for the semi-circles */
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  font-family: 'Roboto', system-ui, sans-serif;
 }
 
 th, td {
-    border: 1px solid #ddd;
+  border: 1px solid var(--border);
+  transition: background-color 0.2s ease;
 }
 
 th {
-    position: relative;
-    padding: 40px; /* Half the padding for the header row */
-    color: white;
-    text-align: center;
-    font-size: 24px; /* Larger font size for headers */
-}
-
-th:not(:first-child)::before {
-    content: '';
-    position: absolute;
-    top: -20px; /* Adjust as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px; /* Adjust as needed */
-    height: 20px; /* Adjust as needed */
-    background-color: inherit; /* Same color as the header */
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-}
-
-th:not(:first-child)::after {
-    content: '🔍'; /* Example icon, you can use any icon or font-awesome */
-    position: absolute;
-    top: -18px; /* Adjust as needed */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 16px; /* Adjust as needed */
-    color: white; /* Icon color */
+  padding: 1.5rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
 }
 
 td {
-    height: 160px; /* Set a fixed height for tall rows */
-    padding: 10px; /* Padding for better alignment */
-    vertical-align: top; /* Align text to the top */
-    text-align: left; /* Align text to the left */
-    font-size: 16px; /* Smaller font size for cells */
+  padding: 1.5rem;
+  background: var(--surface);
+  position: relative;
+  cursor: pointer;
+  color: var(--text-muted); /* Default muted color */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+td.active-cell {
+  color: var(--text); /* Full color for cells with markers */
+}
+
+td:hover {
+  background: #f1f5f9;
 }
 
 .table-container {
   position: relative;
+  padding: 2rem;
+  background: var(--background);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 .lines-svg {
@@ -63,6 +72,14 @@ td {
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+.lines-svg line[stroke-dasharray] {
+  stroke: var(--secondary);
+  stroke-opacity: 0.75;
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 4;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.15));
 }
 
 .circle {
@@ -77,4 +94,91 @@ td {
   position: absolute;
   height: 2px;
   background-color: black;
+}
+
+.controls {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.controls input[type="radio"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--secondary);
+  border-radius: 50%;
+  margin: 0;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.controls input[type="radio"]:checked {
+  border-color: var(--primary);
+  background: var(--primary);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}
+
+.circle.current {
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.circle.aspirational {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.lines-svg line {
+  stroke: var(--primary);
+  stroke-opacity: 0.5;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1));
+}
+
+/* Modern button styling */
+button {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-right: 1rem;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+/* File input styling */
+input[type="file"] {
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
 }
