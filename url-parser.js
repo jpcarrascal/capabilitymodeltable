@@ -74,6 +74,24 @@
         return jsonData;
     }
 
+    // Function to get the base URL of the application
+    function getBasePath() {
+        // Get the current script's path
+        const scripts = document.getElementsByTagName('script');
+        let path = '';
+        
+        // Find this script in the DOM
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].src.indexOf('url-parser.js') !== -1) {
+                // Extract the base path from the script's src
+                path = scripts[i].src.substring(0, scripts[i].src.lastIndexOf('/') + 1);
+                break;
+            }
+        }
+        
+        return path;
+    }
+
     // When the window loads, check for URL parameters and apply them
     window.addEventListener('load', function() {
         const params = getQueryParams();
@@ -88,9 +106,12 @@
         if (hasCapabilityParams) {
             // Try to find the app's table data and table file upload function
             const findAndProcessAppData = function() {
+                // Get the base path for the application
+                const basePath = getBasePath();
+                
                 // The app likely has the table data stored in a global variable or a React component's state
-                // We'll need to fetch the base table structure first
-                fetch('table.json')
+                // We'll need to fetch the base table structure first, using a path that considers the deployment location
+                fetch(basePath + 'table.json')
                     .then(response => response.json())
                     .then(tableData => {
                         // Convert our URL parameters to the JSON format expected by the app
