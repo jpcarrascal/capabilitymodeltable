@@ -1,0 +1,131 @@
+{
+    "headers": [
+      "Initial",
+      "Repeatable",
+      "Defined",
+      "Managed",
+      "Optimizing"
+    ],
+    "rows": [
+      {
+        "label": "Investment",
+        "data": [
+          "Voluntary",
+          "Ad-hoc",
+          "Operationalized - dedicated team",
+          "Scalable - as product",
+          "Optimizing - Enabled ecosystem"
+        ],
+        "currentState": {
+          "x": 586.9296875,
+          "y": 298.5,
+          "cellIndex": 1
+        },
+        "aspirationalState": {
+          "x": 831.125,
+          "y": 298.5,
+          "cellIndex": 2
+        }
+      },
+      {
+        "label": "Adoption",
+        "data": [
+          "Informal",
+          "Mandated",
+          "Advertised",
+          "Value driven",
+          "Participatory"
+        ],
+        "currentState": {
+          "x": 831.125,
+          "y": 367.5,
+          "cellIndex": 2
+        },
+        "aspirationalState": {
+          "x": 1075.3046875,
+          "y": 367.5,
+          "cellIndex": 3
+        }
+      },
+      {
+        "label": "Governance",
+        "data": [
+          "Independent",
+          "Documented",
+          "Standardized",
+          "Integrated",
+          "Predictive"
+        ],
+        "currentState": {
+          "x": 831.125,
+          "y": 436.5,
+          "cellIndex": 2
+        },
+        "aspirationalState": {
+          "x": 1075.3046875,
+          "y": 436.5,
+          "cellIndex": 3
+        }
+      },
+      {
+        "label": "Provisioning and Management",
+        "data": [
+          "Manual",
+          "Coordinated",
+          "Paved",
+          "Automated",
+          "Adaptive"
+        ],
+        "currentState": {
+          "x": 586.9296875,
+          "y": 505.5,
+          "cellIndex": 1
+        },
+        "aspirationalState": {
+          "x": 831.125,
+          "y": 505.5,
+          "cellIndex": 2
+        }
+      },
+      {
+        "label": "Interfaces",
+        "data": [
+          "Custom processes",
+          "Local standards",
+          "Standard tooling",
+          "Self service solutions",
+          "Integrated services"
+        ],
+        "currentState": {
+          "x": 586.9296875,
+          "y": 574.5,
+          "cellIndex": 1
+        },
+        "aspirationalState": {
+          "x": 1075.3046875,
+          "y": 574.5,
+          "cellIndex": 3
+        }
+      },
+      {
+        "label": "Measurements and feedback",
+        "data": [
+          "Ad-hoc",
+          "Structured processes",
+          "Consistent",
+          "Insights",
+          "Proactive"
+        ],
+        "currentState": {
+          "x": 831.125,
+          "y": 643.5,
+          "cellIndex": 2
+        },
+        "aspirationalState": {
+          "x": 1075.3046875,
+          "y": 643.5,
+          "cellIndex": 3
+        }
+      }
+    ]
+  }
